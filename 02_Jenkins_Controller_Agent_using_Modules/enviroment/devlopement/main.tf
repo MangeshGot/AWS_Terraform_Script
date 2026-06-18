@@ -1,0 +1,21 @@
+module "jenkins_controller_agent" {
+  source           = "../../modules/jenkins_controller_agent"
+  vpc_cidr         = var.vpc_cidr
+  public_subnet_1  = var.public_subnet_1
+  public_subnet_2  = var.public_subnet_2
+  private_subnet_1 = var.private_subnet_1
+  private_subnet_2 = var.private_subnet_2
+  vpc_region       = var.vpc_region
+  az_1a            = var.az_1a
+  az_1b            = var.az_1b
+  az_1c            = var.az_1c
+  az_1d            = var.az_1d
+  access_key       = var.access_key
+  secret_key       = var.secret_key
+  instance_type    = var.instance_type
+  ami_id           = var.ami_id
+  enviroment       = var.enviroment
+  key_pair_name    = var.key_pair_name
+  http_port        = var.http_port
+  ssh_port         = var.ssh_port
+}
