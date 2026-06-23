@@ -1,25 +1,34 @@
-module "igw" {
-  source      = "../../modules/igw"
-  environment = var.environment
-}
-module "route_tables" {
-  source      = "../../modules/route_tables"
-  environment = var.environment
+module "vpc" {
+  source             = "../../modules/vpc"
+  eks_vpc_cidr_block = var.eks_vpc_cidr_block
+  environment=var.environment
 }
 module "subnets" {
-  source           = "../../modules/subnets"
-  public_subnet_1  = var.public_subnet_1
-  public_subnet_2  = var.public_subnet_2
-  private_subnet_1 = var.private_subnet_1
-  private_subnet_2 = var.private_subnet_2
-  az_1a            = var.az_1a
-  az_1b            = var.az_1b
-  az_1c            = var.az_1c
-  az_1d            = var.az_1d
-  environment      = var.environment
+  source     = "../../modules/subnets"
+  eks_vpc_id = module.vpc.eks_vpc_id
+  eks_public_subnet_1=var.eks_public_subnet_1
+  eks_public_subnet_2=var.eks_public_subnet_2
+  eks_private_subnet_1=var.eks_private_subnet_1
+  eks_private_subnet_2=var.eks_private_subnet_2
+  az_1a=var.az_1a
+  az_1b=var.az_1b
+  az_1c=var.az_1c
+  az_1d=var.az_1d
 }
-module "vpc" {
-  source      = "../../modules/vpc"
-  environment = var.environment
-  vpc_cidr    = var.vpc_cidr
+module "internet_gateway" {
+  source     = "../../modules/internet_gateway"
+  eks_vpc_id = module.vpc.eks_vpc_id
+  environment=var.environment
+  eks_public_subnet_1_id=module.subnets.eks_public_subnet_1_id
+}
+module "routes" {
+  source     = "../../modules/routes"
+  eks_vpc_id = module.vpc.eks_vpc_id
+  eks_public_subnet_1_id=module.subnets.eks_public_subnet_1_id
+  eks_public_subnet_2_id=module.subnets.eks_public_subnet_2_id
+  eks_private_subnet_1_id=module.subnets.eks_private_subnet_1_id
+  eks_private_subnet_2_id=module.subnets.eks_private_subnet_2_id
+  environment=var.environment
+  eks_igw_id=module.internet_gateway.eks_igw_id
+  eks_nat_igw_id=module.internet_gateway.eks_nat_igw_id
 }

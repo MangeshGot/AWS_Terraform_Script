@@ -1,4 +1,3 @@
-output "vpc_id" {
-  value       = aws_vpc.main_vpc.id
-  description = "ID of the Main VPC"  
+output "eks_vpc_id" {
+    value=aws_vpc.eks_vpc.id
 }

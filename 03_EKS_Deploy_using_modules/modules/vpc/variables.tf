@@ -1,6 +1,6 @@
-variable "environment" {
+variable "eks_vpc_cidr_block" {
   type = string
 }
-variable "vpc_cidr" {
+variable "environment" {
   type = string
 }
