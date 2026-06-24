@@ -21,23 +21,55 @@ The Jenkins infrastructure follows a two-tier AWS architecture:
 
 ## 📂 Repository Structure
 
-```bash
+```text
 AWS_Terraform_Script/
-├── 01_*/
+├── 01_Two-Tier_VPC_Creation_Using_Modules/
+│   ├── env/
+│   │   ├── dev/
+│   │   └── prod/
+│   ├── modules/
+│   │   └── vpc/
+│   │       ├── eip.tf
+│   │       ├── igw.tf
+│   │       ├── nat_igw.tf
+│   │       ├── outputs.tf
+│   │       ├── route_table.tf
+│   │       ├── subnets.tf
+│   │       ├── variables.tf
+│   │       └── vpc.tf
+│   └── README.md
+│
 ├── 02_Jenkins_Controller_Agent_using_Modules/
-│   ├── main.tf
-│   ├── provider.tf
-│   ├── variables.tf
-│   ├── terraform.tfvars
-│   ├── outputs.tf
-│   └── modules/
-│       ├── vpc/
-│       ├── subnet/
-│       ├── internet_gateway/
-│       ├── nat_gateway/
-│       ├── route_table/
-│       ├── security_group/
-│       └── ec2/
+│   ├── enviroment/
+│   │   ├── devlopement/
+│   │   └── production/
+│   ├── modules/
+│   │   └── jenkins_controller_agent/
+│   │       ├── eip.tf
+│   │       ├── igw.tf
+│   │       ├── instance.tf
+│   │       ├── nat_igw.tf
+│   │       ├── outputs.tf
+│   │       ├── route_table.tf
+│   │       ├── security_group.tf
+│   │       ├── subnets.tf
+│   │       ├── variables.tf
+│   │       └── vpc.tf
+│   └── README.md
+│
+├── 03_EKS_Deploy_using_modules/
+│   ├── enviroment/
+│   │   ├── devlopement/
+│   │   ├── production/
+│   │   └── staging/
+│   ├── modules/
+│   │   ├── internet_gateway/
+│   │   ├── routes/
+│   │   ├── subnets/
+│   │   └── vpc/
+│   └── README.md
+│
+├── .gitignore
 └── README.md
 ```
 
