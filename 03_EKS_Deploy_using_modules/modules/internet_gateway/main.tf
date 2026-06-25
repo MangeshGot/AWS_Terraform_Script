@@ -1,3 +1,4 @@
+# Creates the internet gateway, elastic IP, and NAT gateway for the EKS network.
 resource "aws_internet_gateway" "eks_igw"{
     vpc_id=var.eks_vpc_id
     tags={Name="${var.environment}-EKS-IGW"}

@@ -1,39 +1,64 @@
 variable "eks_vpc_region" {
-  type = string
+  description = "AWS region where the EKS networking resources will be created."
+  type        = string
 }
+
 variable "eks_access_key" {
-  type = string
+  description = "AWS access key used by the provider to authenticate."
+  type        = string
 }
+
 variable "eks_secret_key" {
-  type = string
+  description = "AWS secret key used by the provider to authenticate."
+  type        = string
 }
+
 variable "eks_vpc_cidr_block" {
-  type = string
+  description = "CIDR block for the main VPC used by the EKS environment."
+  type        = string
 }
+
 variable "eks_public_subnet_1" {
-  type = string
+  description = "CIDR block for the first public subnet."
+  type        = string
 }
+
 variable "eks_public_subnet_2" {
-  type = string
+  description = "CIDR block for the second public subnet."
+  type        = string
 }
+
 variable "eks_private_subnet_1" {
-  type = string
+  description = "CIDR block for the first private subnet."
+  type        = string
 }
+
 variable "eks_private_subnet_2" {
-  type = string
+  description = "CIDR block for the second private subnet."
+  type        = string
 }
+
 variable "environment" {
-  type=string
+  description = "Deployment environment name such as dev, staging, or production."
+  type        = string
 }
+
 variable "az_1a" {
-  type=string
+  description = "Availability zone for the first subnet."
+  type        = string
 }
+
 variable "az_1b" {
-  type=string
+  description = "Availability zone for the second subnet."
+  type        = string
 }
+
 variable "az_1c" {
-  type=string
+  description = "Availability zone for the third subnet."
+  type        = string
 }
+
 variable "az_1d" {
-  type=string
+  description = "Availability zone for the fourth subnet."
+  type        = string
 }

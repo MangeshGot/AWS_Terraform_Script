@@ -1,3 +1,4 @@
+# Creates public and private route tables and associates them with the EKS subnets.
 resource "aws_route_table" "eks_public_rt" {
     vpc_id = var.eks_vpc_id
     route {

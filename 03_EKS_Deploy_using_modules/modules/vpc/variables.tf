@@ -1,6 +1,9 @@
 variable "eks_vpc_cidr_block" {
-  type = string
+  description = "CIDR block to assign to the VPC for the EKS environment."
+  type        = string
 }
+
 variable "environment" {
-  type = string
+  description = "Name of the deployment environment such as dev or prod."
+  type        = string
 }

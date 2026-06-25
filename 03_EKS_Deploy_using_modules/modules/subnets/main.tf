@@ -1,3 +1,4 @@
+# Creates the public and private subnets required for the EKS network layout.
 resource "aws_subnet" "eks_public_subnet_1"{
     vpc_id =var.eks_vpc_id
     cidr_block=var.eks_public_subnet_1
