@@ -42,3 +42,7 @@ variable "az_1d" {
   description = "Availability zone for the second private subnet."
   type        = string
 }
+variable "environment" {
+  description = "Deployment environment name such as dev, staging, or production."
+  type        = string
+}

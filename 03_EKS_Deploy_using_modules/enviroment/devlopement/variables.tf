@@ -62,3 +62,18 @@ variable "az_1d" {
   description = "Availability zone for the fourth subnet."
   type        = string
 }
+
+variable "cluster_name" {
+   type        = string
+  description = "Name of the EKS cluster"
+}
+variable "cluster_version" {
+  type        = string
+  default     = "1.35"
+  description = "Kubernetes version"
+}
+variable "instance_types" {
+  type        = list(string)
+  default     = ["m7i-flex.large"]
+  description = "EC2 instance types for the worker nodes"
+}
