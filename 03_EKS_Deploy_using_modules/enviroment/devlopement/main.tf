@@ -15,6 +15,7 @@ module "subnets" {
   az_1c=var.az_1c
   az_1d=var.az_1d
   environment=var.environment
+  cluster_name       = var.cluster_name
 }
 module "internet_gateway" {
   source     = "../../modules/internet_gateway"
@@ -32,6 +33,7 @@ module "routes" {
   environment=var.environment
   eks_igw_id=module.internet_gateway.eks_igw_id
   eks_nat_igw_id=module.internet_gateway.eks_nat_igw_id
+  
 }
 
 module "eks" {

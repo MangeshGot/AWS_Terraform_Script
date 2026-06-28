@@ -46,3 +46,7 @@ variable "environment" {
   description = "Deployment environment name such as dev, staging, or production."
   type        = string
 }
+variable "cluster_name" {
+   type        = string
+  description = "Name of the EKS cluster"
+}
