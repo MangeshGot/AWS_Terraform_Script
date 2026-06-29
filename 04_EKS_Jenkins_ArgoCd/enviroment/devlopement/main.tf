@@ -49,14 +49,20 @@ module "eks" {
 }
 
 module "security_groups" {
-  source      = "../../modules/security_groups"
-  http_port   = var.http_port
-  ssh_port    = var.ssh_port
-  environment = var.environment
-
+  source                 = "../../modules/security_groups"
+  http_port              = var.http_port
+  ssh_port               = var.ssh_port
+  environment            = var.environment
+  eks_public_subnet_1_id = module.subnets.eks_public_subnet_1_id
+  eks_vpc_id             = module.vpc.eks_vpc_id
 }
 
 module "instance" {
-  source      = "../../modules/instance"
-  environment = var.environment
+  source                 = "../../modules/instance"
+  eks_public_subnet_1_id = module.subnets.eks_public_subnet_1_id
+  environment            = var.environment
+  jenkins_sg_id          = [module.security_groups.jenkins_sg_id]
+  key_pair_name          = var.key_pair_name
+  ami_id                 = var.ami_id
+  ec2_instance_type      = var.ec2_instance_type
 }

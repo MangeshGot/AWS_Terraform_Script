@@ -1,7 +1,7 @@
 resource "aws_security_group" "jenkins_sg" {
   name        = "Jenkin-SG"
   description = "Allow all inbound HTTP and outbound traffic"
-  vpc_id      = aws_vpc.vpc_main.id
+  vpc_id      = var.eks_vpc_id
   ingress {
     from_port   = var.http_port
     to_port     = var.http_port

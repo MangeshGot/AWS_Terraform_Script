@@ -3,8 +3,8 @@ resource "aws_instance" "controller_ec2" {
   instance_type               = var.ec2_instance_type
   key_name                    = var.key_pair_name
   associate_public_ip_address = true
-  subnet_id                   = aws_subnet.public_subnet_1.id
-  vpc_security_group_ids      = [aws_security_group.jenkins_sg.id]
+  subnet_id                   = var.eks_public_subnet_1_id
+  vpc_security_group_ids      = var.jenkins_sg_id
   user_data                   = <<-EOF
                  #!/bin/bash
                 sudo apt update -y
@@ -26,8 +26,8 @@ resource "aws_instance" "agent_ec2" {
   instance_type               = var.ec2_instance_type
   key_name                    = var.key_pair_name
   associate_public_ip_address = true
-  subnet_id                   = aws_subnet.public_subnet_1.id
-  vpc_security_group_ids      = [aws_security_group.jenkins_sg.id]
+  subnet_id                   = var.eks_public_subnet_1_id
+  vpc_security_group_ids      = var.jenkins_sg_id
   user_data                   = <<-EOF
                 #!/bin/bash
                 sudo apt update -y
