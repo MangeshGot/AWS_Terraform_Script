@@ -23,17 +23,17 @@ variable "eks_private_subnet_2" {
   type = string
 }
 variable "environment" {
-  type=string
+  type = string
 }
 variable "az_1a" {
-  type=string
+  type = string
 }
 variable "az_1b" {
-  type=string
+  type = string
 }
 variable "az_1c" {
-  type=string
+  type = string
 }
 variable "az_1d" {
-  type=string
+  type = string
 }

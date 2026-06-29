@@ -77,3 +77,19 @@ variable "instance_types" {
   default     = ["m7i-flex.large"]
   description = "EC2 instance types for the worker nodes"
 }
+
+variable "ec2_instance_type" {
+  type = string
+}
+variable "ami_id" {
+  type = string
+}
+variable "key_pair_name" {
+  type = string
+}
+variable "http_port" {
+  type = number
+}
+variable "ssh_port" {
+  type = number
+}

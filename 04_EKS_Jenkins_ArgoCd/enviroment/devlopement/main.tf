@@ -14,6 +14,8 @@ module "subnets" {
   az_1b                = var.az_1b
   az_1c                = var.az_1c
   az_1d                = var.az_1d
+  environment          = var.environment
+  cluster_name         = var.cluster_name
 }
 module "internet_gateway" {
   source                 = "../../modules/internet_gateway"
@@ -31,4 +33,30 @@ module "routes" {
   environment             = var.environment
   eks_igw_id              = module.internet_gateway.eks_igw_id
   eks_nat_igw_id          = module.internet_gateway.eks_nat_igw_id
+
+}
+module "eks" {
+  source          = "../../modules/eks"
+  cluster_name    = var.cluster_name
+  cluster_version = var.cluster_version
+  eks_vpc_id      = module.vpc.eks_vpc_id
+  instance_types  = ["m7i-flex.large"]
+  private_subnet_ids = [
+    module.subnets.eks_private_subnet_1_id,
+    module.subnets.eks_private_subnet_2_id
+  ]
+  environment = var.environment
+}
+
+module "security_groups" {
+  source      = "../../modules/security_groups"
+  http_port   = var.http_port
+  ssh_port    = var.ssh_port
+  environment = var.environment
+
+}
+
+module "instance" {
+  source      = "../../modules/instance"
+  environment = var.environment
 }

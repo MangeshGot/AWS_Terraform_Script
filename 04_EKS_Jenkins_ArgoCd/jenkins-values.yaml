@@ -1,0 +1,8 @@
+controller:
+  serviceType: LoadBalancer # Exposes Jenkins via AWS ALB automatically
+  persistence:
+    storageClass: "gp2" # Use an EBS-backed storage class
+    size: 10Gi
+  serviceAccount:
+    create: true
+    name: jenkins-sa
