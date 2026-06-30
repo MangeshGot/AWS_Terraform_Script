@@ -24,3 +24,19 @@ variable "environment" {
   description = "Deployment environment name such as dev, staging, or production."
   type        = string
 }
+variable "environment" {
+  description = "Deployment environment name such as dev, staging, or production."
+  type        = string
+}
+
+variable "namespace" {
+  type        = string
+  description = "The Kubernetes namespace where your app runs"
+  default     = "default"
+}
+
+variable "service_account_name" {
+  type        = string
+  description = "The name of the Kubernetes ServiceAccount used by the pods"
+  default     = "my-app-service-account"
+}

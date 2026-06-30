@@ -84,11 +84,6 @@ resource "aws_eks_addon" "kube_proxy" {
   addon_name   = "kube-proxy"
 }
 
-resource "aws_eks_addon" "pod_identity" {
-  cluster_name = aws_eks_cluster.this.name
-  addon_name   = "eks-pod-identity-agent"
-}
-
 resource "aws_eks_addon" "ebs_csi" {
   cluster_name = aws_eks_cluster.this.name
   addon_name   = "aws-ebs-csi-driver"
@@ -157,4 +152,48 @@ resource "aws_eks_node_group" "this" {
     aws_iam_role_policy_attachment.node_cni,
     aws_iam_role_policy_attachment.node_registry
   ]
+}
+
+# 1. Install the EKS Pod Identity Agent Add-on
+resource "aws_eks_addon" "pod_identity" {
+  cluster_name = aws_eks_cluster.this.name
+  addon_name   = "eks-pod-identity-agent"
+}
+# 2. Define the Trust Policy for Pod Identity
+data "aws_iam_policy_document" "pod_identity_trust" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["pods.eks.amazonaws.com"]
+    }
+
+    actions = [
+      "sts:AssumeRole",
+      "sts:TagSession"
+    ]
+  }
+}
+# 3. Create the IAM Role using the Trust Policy
+resource "aws_iam_role" "app_role" {
+  name               = "${var.cluster_name}-pod-identity-role"
+  assume_role_policy = data.aws_iam_policy_document.pod_identity_trust.json
+}
+
+# 4. Attach an IAM Policy to the Role (e.g., S3 Read-Only)
+resource "aws_iam_role_policy_attachment" "s3_read_only" {
+  role       = aws_iam_role.app_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+}
+
+# 5. Create the EKS Pod Identity Association
+resource "aws_eks_pod_identity_association" "app_association" {
+  cluster_name    = var.cluster_name
+  namespace       = var.namespace
+  service_account = var.service_account_name
+  role_arn        = aws_iam_role.app_role.arn
+
+  # Ensures the addon is running before EKS tries to map the association
+  depends_on = [aws_eks_addon.pod_identity]
 }
