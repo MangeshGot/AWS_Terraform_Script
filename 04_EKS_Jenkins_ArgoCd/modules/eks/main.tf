@@ -4,7 +4,6 @@
 resource "aws_iam_role" "cluster_control_plane_role" {
   name = "${var.environment}-${var.cluster_name}-control-plane-role"
 
-  # NATIVE OBJECTS FORCE AWS TO SQUASH PREVIOUS MALFORMED CACHED VALUES
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -154,46 +153,57 @@ resource "aws_eks_node_group" "this" {
   ]
 }
 
-# 1. Install the EKS Pod Identity Agent Add-on
+# =========================================================================
+# 7. APPLICATION & ALB CONTROLLER POD IDENTITY CONFIGURATION
+# =========================================================================
+
+# A. Install Pod Identity Agent
 resource "aws_eks_addon" "pod_identity" {
   cluster_name = aws_eks_cluster.this.name
   addon_name   = "eks-pod-identity-agent"
 }
-# 2. Define the Trust Policy for Pod Identity
+
+# B. Trust Policy
 data "aws_iam_policy_document" "pod_identity_trust" {
   statement {
     effect = "Allow"
-
     principals {
       type        = "Service"
       identifiers = ["pods.eks.amazonaws.com"]
     }
-
     actions = [
       "sts:AssumeRole",
       "sts:TagSession"
     ]
   }
 }
-# 3. Create the IAM Role using the Trust Policy
+
+# C. Create the Pod Identity Role 
 resource "aws_iam_role" "app_role" {
   name               = "${var.cluster_name}-pod-identity-role"
   assume_role_policy = data.aws_iam_policy_document.pod_identity_trust.json
 }
 
-# 4. Attach an IAM Policy to the Role (e.g., S3 Read-Only)
-resource "aws_iam_role_policy_attachment" "s3_read_only" {
-  role       = aws_iam_role.app_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+# D. ADDED HERE: Load the local JSON file into an AWS IAM Policy
+resource "aws_iam_policy" "aws_lb_controller" {
+  name        = "${var.cluster_name}-aws-lb-controller-policy"
+  path        = "/"
+  description = "IAM policy for AWS Load Balancer Controller parsed from local file"
+  policy      = file("${path.module}/iam_policy.json") # Looks for iam_policy.json in the same folder
 }
 
-# 5. Create the EKS Pod Identity Association
+# E. ADDED HERE: Attach the policy to the Role
+resource "aws_iam_role_policy_attachment" "aws_lb_controller_attach" {
+  role       = aws_iam_role.app_role.name
+  policy_arn = aws_iam_policy.aws_lb_controller.arn
+}
+
+# F. Map it to EKS Pod Identity
 resource "aws_eks_pod_identity_association" "app_association" {
-  cluster_name    = var.cluster_name
+  cluster_name    = aws_eks_cluster.this.name # Changed to object reference to ensure order
   namespace       = var.namespace
   service_account = var.service_account_name
   role_arn        = aws_iam_role.app_role.arn
 
-  # Ensures the addon is running before EKS tries to map the association
   depends_on = [aws_eks_addon.pod_identity]
 }

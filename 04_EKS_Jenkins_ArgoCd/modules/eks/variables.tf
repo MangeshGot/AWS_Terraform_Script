@@ -24,11 +24,6 @@ variable "environment" {
   description = "Deployment environment name such as dev, staging, or production."
   type        = string
 }
-variable "environment" {
-  description = "Deployment environment name such as dev, staging, or production."
-  type        = string
-}
-
 variable "namespace" {
   type        = string
   description = "The Kubernetes namespace where your app runs"
