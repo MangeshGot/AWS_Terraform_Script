@@ -6,19 +6,20 @@ resource "aws_instance" "controller_ec2" {
   subnet_id                   = var.eks_public_subnet_1_id
   vpc_security_group_ids      = var.jenkins_sg_id
   user_data                   = <<-EOF
-                 #!/bin/bash
-                sudo apt update -y
-                sudo apt install fontconfig openjdk-21-jre -y
-                sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
-                https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
-                echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
-                https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
-                /etc/apt/sources.list.d/jenkins.list > /dev/null
-                sudo apt update -y
-                sudo apt install jenkins -y
-                sudo systemctl enable jenkins
-                sudo systemctl start jenkins
-                EOF
+  #!/bin/bash
+  sudo apt update -y
+  sudo apt install fontconfig openjdk-21-jre -y
+  sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+  echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+  sudo apt update
+  sudo apt install jenkins -y
+  sudo systemctl enable jenkins
+  sudo systemctl start jenkins
+  
+  EOF
   tags                        = { Name = "${var.environment}-Jenkins-Controller" }
 }
 resource "aws_instance" "agent_ec2" {
@@ -31,7 +32,7 @@ resource "aws_instance" "agent_ec2" {
   user_data                   = <<-EOF
                 #!/bin/bash
                 sudo apt update -y
-                sudo apt install fontconfig openjdk-21-jre -y
+                sudo apt install fontconfig openjdk-26-jre -y
                 EOF
   tags                        = { Name = "${var.environment}-Jenkins-Agent" }
 
