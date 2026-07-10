@@ -69,6 +69,22 @@ AWS_Terraform_Script/
 │   │   └── vpc/
 │   └── README.md
 │
+├── 04_EKS_Jenkins_ArgoCd/
+│   ├── jenkins-values.yaml
+│   ├── enviroment/
+│   │   ├── devlopement/
+│   │   ├── production/
+│   │   └── staging/
+│   ├── modules/
+│   │   ├── eks/
+│   │   ├── instance/
+│   │   ├── internet_gateway/
+│   │   ├── routes/
+│   │   ├── security_groups/
+│   │   ├── subnets/
+│   │   └── vpc/
+│   └── README.md
+│
 ├── .gitignore
 └── README.md
 ```

@@ -157,6 +157,44 @@ kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadB
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 ```
 
+## ⚖️ Install AWS Load Balancer Controller
+
+The AWS Load Balancer Controller manages AWS Elastic Load Balancers (ALB/NLB) for the EKS cluster.
+
+### 1. Add the EKS Helm Chart Repository
+
+```bash
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update
+```
+
+### 2. Install the Controller using Helm
+
+Run the following command in your terminal:
+
+```bash
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=mangesh-cluster \
+  --set serviceAccount.create=true \
+  --set serviceAccount.name=mangesh-service-account \
+  --set region=us-east-1 \
+  --set vpcId=vpc-038e2f8e2a078d8b2 \
+  --version 1.14.0
+```
+
+### 3. Verify the Installation
+
+Check if the service account and the controller pods are successfully created and running:
+
+```bash
+# Verify the service account exists
+kubectl get serviceaccount -n kube-system mangesh-service-account
+
+# Check the status of the controller pods
+kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
+```
+
 ## 🔄 Full CI/CD Flow for the Vortex Application
 
 The Vortex repository contains the application source code and its Jenkinsfile. This pipeline automates the end-to-end deployment process to EKS.

@@ -5,7 +5,7 @@ resource "aws_instance" "controller_ec2" {
   associate_public_ip_address = true
   subnet_id                   = var.eks_public_subnet_1_id
   vpc_security_group_ids      = var.jenkins_sg_id
-user_data = <<-EOF
+  user_data                   = <<-EOF
     #!/bin/bash
     sudo apt update -y
     sudo apt install fontconfig openjdk-21-jre -y
@@ -28,7 +28,7 @@ resource "aws_instance" "agent_ec2" {
   associate_public_ip_address = true
   subnet_id                   = var.eks_public_subnet_1_id
   vpc_security_group_ids      = var.jenkins_sg_id
-user_data = <<-EOF
+  user_data                   = <<-EOF
     #!/bin/bash
     sudo apt update -y
     sudo apt install fontconfig openjdk-21-jre -y # Fixed: Matched Java version with controller
