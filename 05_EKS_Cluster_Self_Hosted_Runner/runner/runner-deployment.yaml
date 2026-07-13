@@ -1,0 +1,27 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: eks-github-runner
+  namespace: actions-runner-system
+spec:
+  template:
+    spec:
+      # Use your organization name or 'owner/repo-name' for a specific repository
+      repository: "MangeshGot/vortex"
+      labels:
+        - eks-runner
+---
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: HorizontalRunnerAutoscaler
+metadata:
+  name: eks-runner-scaler
+  namespace: actions-runner-system
+spec:
+  scaleTargetRef:
+    name: eks-github-runner
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    - type: TotalNumberOfQueuedAndInProgressWorkflowRuns
+      repositoryNames:
+        - "MangeshGot/vortex"
