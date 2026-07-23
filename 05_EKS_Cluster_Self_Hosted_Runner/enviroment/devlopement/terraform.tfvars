@@ -1,6 +1,6 @@
 eks_vpc_region       = "us-east-1"
-eks_access_key       = "ACCESS_KEY"
-eks_secret_key       = "SECRET_KEY"
+eks_access_key       = "ACCESS"
+eks_secret_key       = "SECRET"
 eks_vpc_cidr_block   = "192.168.0.0/24"
 eks_public_subnet_1  = "192.168.0.0/26"
 eks_public_subnet_2  = "192.168.0.64/26"
