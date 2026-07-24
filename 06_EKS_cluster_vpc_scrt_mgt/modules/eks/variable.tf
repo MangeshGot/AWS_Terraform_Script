@@ -1,9 +1,9 @@
 variable "environment_profile" {
   type = string
 }
-variable "eks_vpc_id" {
+variable "cluster_name" {
   type = string
 }
-variable "public_subnet_1_id" {
+variable "cluster_version" {
   type = string
 }
