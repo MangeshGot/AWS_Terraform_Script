@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "aws" {
-  shared_config_files      = ["/home/mangesh/.aws"]
-  shared_credentials_files = ["/home/mangesh/.aws"]
-  profile                  = "Production"
+  shared_config_files      = ["/home/mangesh/.aws/config"]
+  shared_credentials_files = ["/home/mangesh/.aws/credentials"]
+  profile                  = "default"
 }

@@ -38,6 +38,15 @@ module "routes" {
 }
 
 module "eks" {
-  source              = "../../modules/eks"
+  source                   = "../../modules/eks"
+  cluster_name             = var.cluster_name
+  cluster_version          = var.cluster_version
+  alb_service_account_name = var.alb_service_account_name
+  alb_namespace            = var.alb_namespace
+  instance_types           = var.instance_types
+  private_subnet_ids = [
+    module.subnets.eks_private_subnet_1_id,
+    module.subnets.eks_private_subnet_2_id
+  ]
   environment_profile = var.environment_profile
 }

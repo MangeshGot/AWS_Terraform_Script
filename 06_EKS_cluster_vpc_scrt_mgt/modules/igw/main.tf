@@ -10,7 +10,7 @@ resource "aws_eip" "eks_eip" {
   }
 }
 
-resource "aws_nat_gateway" "eks_nat_gateway" {
+resource "aws_nat_gateway" "eks_nat_gw" {
   allocation_id = aws_eip.eks_eip.id
   subnet_id     = var.public_subnet_1_id
   tags = {

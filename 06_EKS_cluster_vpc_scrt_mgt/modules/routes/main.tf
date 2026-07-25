@@ -9,7 +9,7 @@ resource "aws_route_table" "eks_public_rt" {
   }
 }
 
-resource "aws_route_table" "eks_public_rt" {
+resource "aws_route_table" "eks_private_rt" {
   vpc_id = var.eks_vpc_id
   route {
     cidr_block = "0.0.0.0/0"
