@@ -13,4 +13,5 @@ cluster_version          = "1.36"
 alb_service_account_name = "aws-load-balancer-controller-sa"
 alb_namespace            = "kube-system"
 instance_types           = ["m7i-flex.large"]
-environment_profile      = "Production"
+environment_profile      = "Devlopement"
+bucket_name              = "tfstate-devlopment-mangesh"

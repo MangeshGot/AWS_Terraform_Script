@@ -5,10 +5,19 @@ terraform {
       version = "~> 6.0"
     }
   }
+
+  backend "s3" {
+    bucket       = "tfstate-devlopment-mangesh"
+    key          = "devlopement/terraform.tfstate"
+    region       = "us-east-1"
+    use_lockfile = true
+    encrypt      = true
+  }
 }
 
 provider "aws" {
-  shared_config_files      = ["/home/mangesh/.aws/config"]
-  shared_credentials_files = ["/home/mangesh/.aws/credentials"]
-  profile                  = "default"
+  region  = var.vpc_region_name
+  profile = "ysh-aws-account"
 }
+
+

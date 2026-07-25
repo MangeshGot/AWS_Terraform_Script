@@ -1,3 +1,7 @@
+module "remote_state_s3" {
+  source      = "../../modules/remote_state_s3"
+  bucket_name = var.bucket_name
+}
 module "vpc" {
   source              = "../../modules/vpc"
   vpc_cidr_block      = var.vpc_cidr_block
