@@ -1,5 +1,5 @@
 terraform {
-    backend "s3" {
+  backend "s3" {
     bucket       = "tfstate-devlopment-mangesh"
     key          = "devlopement/terraform.tfstate"
     region       = "us-east-1"

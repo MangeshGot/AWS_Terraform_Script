@@ -9,3 +9,12 @@ module "vpc" {
   public_subnet_tags  = var.public_subnet_tags
   private_subnet_tags = var.private_subnet_tags
 }
+
+module "eks" {
+  source              = "../../modules/eks"
+  instance_types      = var.instance_types
+  cluster_name        = var.cluster_name
+  cluster_version     = var.cluster_version
+  private_subnets_ids = module.vpc.private_subnets_ids
+  environment_profile = var.environment_profile
+}
