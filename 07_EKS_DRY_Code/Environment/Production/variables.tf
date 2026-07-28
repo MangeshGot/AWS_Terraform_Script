@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------
-# Development Environment Variables
+# Production Environment Variables
 #------------------------------------------------------------------------------
 
 variable "vpc_region_name" {

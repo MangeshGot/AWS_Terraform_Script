@@ -1,4 +1,6 @@
-#--------------------IAM Role for Control Plane-----------------
+#------------------------------------------------------------------------------
+# Control Plane IAM Role
+#------------------------------------------------------------------------------
 resource "aws_iam_role" "cluster_control_plane_role" {
   name = "${var.environment_profile}-${var.cluster_name}-CONTROL-PLANE-ROLE"
 
@@ -12,18 +14,22 @@ resource "aws_iam_role" "cluster_control_plane_role" {
   })
 }
 
-#---------------------Attach Policy to Control Plane Role-----------------
-resource "aws_iam_role_policy_attachment" "cluster_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+#------------------------------------------------------------------------------
+# Attach Policies to Control Plane Role
+#------------------------------------------------------------------------------
+resource "aws_iam_role_policy_attachment" "cluster_policies" {
+  for_each = toset([
+    "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+    "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+  ])
+
+  policy_arn = each.value
   role       = aws_iam_role.cluster_control_plane_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "vpc_resource_controller_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.cluster_control_plane_role.name
-}
-
-#---------------------EKS Cluster Creation-----------------
+#------------------------------------------------------------------------------
+# EKS Cluster
+#------------------------------------------------------------------------------
 resource "aws_eks_cluster" "this" {
   name     = var.cluster_name
   version  = var.cluster_version
@@ -36,31 +42,13 @@ resource "aws_eks_cluster" "this" {
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.cluster_policy,
-    aws_iam_role_policy_attachment.vpc_resource_controller_policy
+    aws_iam_role_policy_attachment.cluster_policies
   ]
 }
 
-#----------------VPC CNI Addon----------------
-resource "aws_eks_addon" "vpc_cni" {
-  cluster_name = aws_eks_cluster.this.name
-  addon_name   = "vpc-cni"
-}
-
-#----------------CoreDNS Addon----------------
-resource "aws_eks_addon" "coredns" {
-  cluster_name = aws_eks_cluster.this.name
-  addon_name   = "coredns"
-  depends_on   = [aws_eks_node_group.this]
-}
-
-#----------------Kube Proxy Addon----------------
-resource "aws_eks_addon" "kube_proxy" {
-  cluster_name = aws_eks_cluster.this.name
-  addon_name   = "kube-proxy"
-}
-
-#----------------IAM Role for Node Group----------------
+#------------------------------------------------------------------------------
+# EKS Node Group IAM Role
+#------------------------------------------------------------------------------
 resource "aws_iam_role" "cluster_node_group_role" {
   name = "${var.environment_profile}-${var.cluster_name}-NODEGROUP-ROLE"
 
@@ -74,24 +62,23 @@ resource "aws_iam_role" "cluster_node_group_role" {
   })
 }
 
-#---------------- Attach Policy to Node Group Role ----------------
-resource "aws_iam_role_policy_attachment" "node_worker" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+#------------------------------------------------------------------------------
+# Attach Policies to Node Group Role
+#------------------------------------------------------------------------------
+resource "aws_iam_role_policy_attachment" "node_policies" {
+  for_each = toset([
+    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  ])
+
+  policy_arn = each.value
   role       = aws_iam_role.cluster_node_group_role.name
 }
 
-#---------------- Attach Policy to Node Group Role ----------------
-resource "aws_iam_role_policy_attachment" "node_cni" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.cluster_node_group_role.name
-}
-
-#---------------- Attach Policy to Node Group Role ----------------
-resource "aws_iam_role_policy_attachment" "node_registry" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.cluster_node_group_role.name
-}
-
+#------------------------------------------------------------------------------
+# EKS Node Group
+#------------------------------------------------------------------------------
 resource "aws_eks_node_group" "this" {
   cluster_name    = aws_eks_cluster.this.name
   node_group_name = "${var.cluster_name}-m7i-flex-workers"
@@ -111,8 +98,17 @@ resource "aws_eks_node_group" "this" {
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.node_worker,
-    aws_iam_role_policy_attachment.node_cni,
-    aws_iam_role_policy_attachment.node_registry
+    aws_iam_role_policy_attachment.node_policies
   ]
+}
+
+#------------------------------------------------------------------------------
+# EKS Addons (VPC CNI, kube-proxy, CoreDNS)
+#------------------------------------------------------------------------------
+resource "aws_eks_addon" "addons" {
+  for_each     = toset(["vpc-cni", "kube-proxy", "coredns"])
+  cluster_name = aws_eks_cluster.this.name
+  addon_name   = each.value
+
+  depends_on = [aws_eks_node_group.this]
 }

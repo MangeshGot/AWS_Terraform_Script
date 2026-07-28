@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------
-# Development Environment Variables
+# Staging Environment Variables
 #------------------------------------------------------------------------------
 
 variable "vpc_region_name" {
